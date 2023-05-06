@@ -2,6 +2,7 @@ package com.example.agricart;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -9,12 +10,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.agricart.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     NavigationView SideMenu;
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
+    FirebaseUser user;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -49,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+
 
         toggle = new ActionBarDrawerToggle(this, DrawerLayout, toolbar, R.string.menu_open, R.string.menu_close);
         DrawerLayout.addDrawerListener(toggle);
@@ -63,6 +75,37 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.delete:
+                        DrawerLayout.closeDrawer(GravityCompat.START);
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                        dialog.setTitle("Delete Account");
+                        dialog.setMessage("Deleting this account cannot be undone. You will not be able to use the app using this account.");
+                        dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(MainActivity.this, "Account Deleted",Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(getApplicationContext(),Login.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                        else {
+                                            Toast.makeText(MainActivity.this, "Delete Unsuccessful!",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        AlertDialog alertDialog = dialog.create();
+                        alertDialog.show();
                         break;
 
                     case R.id.logout:
