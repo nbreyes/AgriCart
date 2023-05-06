@@ -73,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.seller:
                         break;
+                    case R.id.recommendation:
+                        DrawerLayout.closeDrawer(GravityCompat.START);
+                        changeVisibleFragment(new RecommendationFragment());
+                        break;
 
                     case R.id.delete:
                         DrawerLayout.closeDrawer(GravityCompat.START);
@@ -110,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.logout:
                         DrawerLayout.closeDrawer(GravityCompat.START);
-                        Intent intent = new Intent(getApplicationContext(),Login.class);
-                        startActivity(intent);
+                        Intent secondIntent = new Intent(getApplicationContext(),Login.class);
+                        startActivity(secondIntent);
                         finish();
                         break;
                 }

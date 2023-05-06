@@ -9,6 +9,10 @@
         android:id="@+id/seller"
         />
     <item
+        android:title="Recommendation"
+        android:icon="@drawable/recommend"
+        android:id="@+id/recommendation"/>
+    <item
         android:title="Delete Account"
         android:icon="@drawable/delete"
         android:id="@+id/delete"
