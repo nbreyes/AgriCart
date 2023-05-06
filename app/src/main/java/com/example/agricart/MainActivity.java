@@ -109,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.logout:
+                        DrawerLayout.closeDrawer(GravityCompat.START);
+                        Intent intent = new Intent(getApplicationContext(),Login.class);
+                        startActivity(intent);
+                        finish();
                         break;
                 }
                 return true;
