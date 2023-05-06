@@ -14,10 +14,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.agricart.R.id;
 import com.example.agricart.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
     NavigationView SideMenu;
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
+    TextView username;
     FirebaseUser user;
+    FirebaseAuth auth;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -56,8 +61,17 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.bringToFront();
 
+        View view = SideMenu.getHeaderView(0);
+        username = view.findViewById(R.id.username);
+        auth = FirebaseAuth.getInstance();
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        user = auth.getCurrentUser();
+        if (user != null) {
+            username.setText(user.getEmail());
+        }
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
