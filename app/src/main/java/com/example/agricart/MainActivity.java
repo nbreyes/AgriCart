@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.seller:
+                        Intent intent = new Intent(getApplicationContext(),Seller.class);
+                        startActivity(intent);
+                        finish();
                         break;
                     case R.id.recommendation:
                         DrawerLayout.closeDrawer(GravityCompat.START);
@@ -91,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             Toast.makeText(MainActivity.this, "Account Deleted",Toast.LENGTH_LONG).show();
-                                            Intent intent = new Intent(getApplicationContext(),Login.class);
-                                            startActivity(intent);
+                                            Intent secondIntent = new Intent(getApplicationContext(),Login.class);
+                                            startActivity(secondIntent);
                                             finish();
                                         }
                                         else {
@@ -114,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.logout:
                         DrawerLayout.closeDrawer(GravityCompat.START);
-                        Intent secondIntent = new Intent(getApplicationContext(),Login.class);
-                        startActivity(secondIntent);
+                        Intent thirdIntent = new Intent(getApplicationContext(),Login.class);
+                        startActivity(thirdIntent);
                         finish();
                         break;
                 }
