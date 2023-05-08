@@ -91,8 +91,9 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.recommendation:
-                        DrawerLayout.closeDrawer(GravityCompat.START);
-                        changeVisibleFragment(new RecommendationFragment());
+                       Intent secondIntent = new Intent(getApplicationContext(),Recommendation.class);
+                       startActivity(secondIntent);
+                       finish();
                         break;
 
                     case R.id.delete:
@@ -108,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             Toast.makeText(MainActivity.this, "Account Deleted",Toast.LENGTH_LONG).show();
-                                            Intent secondIntent = new Intent(getApplicationContext(),Login.class);
-                                            startActivity(secondIntent);
+                                            Intent thirdIntent = new Intent(getApplicationContext(),Login.class);
+                                            startActivity(thirdIntent);
                                             finish();
                                         }
                                         else {
@@ -131,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
 
                     case R.id.logout:
                         DrawerLayout.closeDrawer(GravityCompat.START);
-                        Intent thirdIntent = new Intent(getApplicationContext(),Login.class);
-                        startActivity(thirdIntent);
+                        Intent fourthIntent = new Intent(getApplicationContext(),Login.class);
+                        startActivity(fourthIntent);
                         finish();
                         break;
                 }
