@@ -2,17 +2,20 @@ package com.example.agricart;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -30,8 +33,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Recommendation extends AppCompatActivity implements LocationListener{
-
-
+    Toolbar toolbar;
     TextView responseChatGPT;
     TextView test;
     public static final MediaType JSON
@@ -48,6 +50,15 @@ public class Recommendation extends AppCompatActivity implements LocationListene
         setContentView(R.layout.activity_recommendation);
 
         test = (TextView) findViewById(R.id.test);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         getUserLocation();
         responseChatGPT = (TextView) findViewById(R.id.responseChatGPT);
