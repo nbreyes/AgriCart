@@ -11,6 +11,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,11 +20,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,7 +47,10 @@ public class Recommendation extends AppCompatActivity implements LocationListene
 
     OkHttpClient client = new OkHttpClient();
     String chatGPTReply;
-
+    double lat;
+    double longitude;
+    double celsiusTemp;
+    String city;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +68,16 @@ public class Recommendation extends AppCompatActivity implements LocationListene
             }
         });
 
-        getUserLocation();
+        try {
+            getUserLocation();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         responseChatGPT = (TextView) findViewById(R.id.responseChatGPT);
         promptChatGPT();
     }
 
-    public void getUserLocation() {
+    public void getUserLocation() throws IOException {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLocation();
@@ -75,26 +87,75 @@ public class Recommendation extends AppCompatActivity implements LocationListene
         }
     }
 
+    private void openWeatherMap() {
+
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=0bc8c9fc7d82306fb795fff1e0105067";
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body().string()).getJSONObject("main");
+                        String kelvinTemp = jsonObject.getString("temp");
+                        celsiusTemp = Double.parseDouble(kelvinTemp) - 273.15;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                test.setText(String.format(Locale.getDefault(), "%.2f", celsiusTemp) + " lat: " + lat + ", long: " + longitude + ", " + city);
+                            }
+                        });
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    throw new IOException();
+                }
+            }
+        });
+    }
+
+
     @SuppressLint("MissingPermission")
-    private void getLocation() {
+    private void getLocation() throws IOException {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double lat = 0;
-        double longitude = 0;
+        celsiusTemp = 0.0;
+        lat = 0;
+        longitude = 0;
+        city = null;
         if (location != null) {
             lat = location.getLatitude();
             longitude = location.getLongitude();
+            Geocoder geocoder = new Geocoder(Recommendation.this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(lat, longitude, 1);
+            city = addresses.get(0).getLocality();
+            openWeatherMap();
         }
-        test.setText("lat: " + lat + ", long: " + longitude);
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if(requestCode == 200 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getLocation();
+            try {
+                getLocation();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         else {
             test.setText("Permission Denied");
@@ -121,13 +182,14 @@ public class Recommendation extends AppCompatActivity implements LocationListene
         LocationListener.super.onProviderDisabled(provider);
     }
 
+
     public void promptChatGPT() {
 
 
         JSONObject JsonBody = new JSONObject();
         try {
             JsonBody.put("model", "text-davinci-003");
-            String prompt = "What crop should I plant in 28 degrees celsius in Philippines? Give at least 10. Cite sources and percentage of accuracy";
+            String prompt = "What crop should I plant in " + String.format(Locale.getDefault(), "%.2f", celsiusTemp) + " degrees celsius in "+ city +"? Give at least 10. Cite sources and percentage of accuracy";
             JsonBody.put("prompt", prompt);
             JsonBody.put("max_tokens", 1000);
             JsonBody.put("temperature", 0);
@@ -169,7 +231,7 @@ public class Recommendation extends AppCompatActivity implements LocationListene
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        responseChatGPT.setText("Failed");
+                        responseChatGPT.setText("What crop should I plant in " + String.format(Locale.getDefault(), "%.2f", celsiusTemp) + " degrees celsius in "+ city +"? Give at least 10. Cite sources and percentage of accuracy");
                     }
                 });
             }
