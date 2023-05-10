@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -51,6 +52,7 @@ public class Recommendation extends AppCompatActivity implements LocationListene
     double longitude;
     double celsiusTemp;
     String city;
+    String prompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,7 @@ public class Recommendation extends AppCompatActivity implements LocationListene
             throw new RuntimeException(e);
         }
         responseChatGPT = (TextView) findViewById(R.id.responseChatGPT);
-        promptChatGPT();
+
     }
 
     public void getUserLocation() throws IOException {
@@ -109,12 +111,7 @@ public class Recommendation extends AppCompatActivity implements LocationListene
                         JSONObject jsonObject = new JSONObject(response.body().string()).getJSONObject("main");
                         String kelvinTemp = jsonObject.getString("temp");
                         celsiusTemp = Double.parseDouble(kelvinTemp) - 273.15;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                test.setText(String.format(Locale.getDefault(), "%.2f", celsiusTemp) + " lat: " + lat + ", long: " + longitude + ", " + city);
-                            }
-                        });
+                        promptChatGPT();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -142,6 +139,7 @@ public class Recommendation extends AppCompatActivity implements LocationListene
             List<Address> addresses = geocoder.getFromLocation(lat, longitude, 1);
             city = addresses.get(0).getLocality();
             openWeatherMap();
+
         }
     }
 
@@ -185,22 +183,29 @@ public class Recommendation extends AppCompatActivity implements LocationListene
 
     public void promptChatGPT() {
 
-
         JSONObject JsonBody = new JSONObject();
         try {
             JsonBody.put("model", "text-davinci-003");
-            String prompt = "What crop should I plant in " + String.format(Locale.getDefault(), "%.2f", celsiusTemp) + " degrees celsius in "+ city +"? Give at least 10. Cite sources and percentage of accuracy";
+            prompt = "What crop should I plant in " + String.format(Locale.getDefault(), "%.2f", celsiusTemp) + " degrees celsius in "+ city +"? Give at least 10. Cite sources and percentage of accuracy";
             JsonBody.put("prompt", prompt);
             JsonBody.put("max_tokens", 1000);
-            JsonBody.put("temperature", 0);
+            JsonBody.put("temperature", 1);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
+
         RequestBody body = RequestBody.create(JsonBody.toString(), JSON);
         Request request = new Request.Builder()
                 .url("https://api.openai.com/v1/completions")
                 .header("Authorization", "Bearer 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")
                 .post(body)
+                .build();
+
+        client = new OkHttpClient.Builder()
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .writeTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(100, TimeUnit.SECONDS)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -231,7 +236,7 @@ public class Recommendation extends AppCompatActivity implements LocationListene
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        responseChatGPT.setText("What crop should I plant in " + String.format(Locale.getDefault(), "%.2f", celsiusTemp) + " degrees celsius in "+ city +"? Give at least 10. Cite sources and percentage of accuracy");
+                        responseChatGPT.setText("Failed to get Recommendations");
                     }
                 });
             }
