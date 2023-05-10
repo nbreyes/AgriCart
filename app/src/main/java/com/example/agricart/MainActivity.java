@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case R.id.logout:
+                        FirebaseAuth.getInstance().signOut();
                         DrawerLayout.closeDrawer(GravityCompat.START);
                         Intent fourthIntent = new Intent(getApplicationContext(),Login.class);
                         startActivity(fourthIntent);
