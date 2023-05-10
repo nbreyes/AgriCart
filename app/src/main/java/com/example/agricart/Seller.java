@@ -48,9 +48,6 @@ public class Seller extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 InsertData();
-                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
-                finish();
 
             }
         });
@@ -69,6 +66,9 @@ public class Seller extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
                             Toast.makeText(Seller.this, "Store Created!", Toast.LENGTH_LONG);
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
                     }
                 });

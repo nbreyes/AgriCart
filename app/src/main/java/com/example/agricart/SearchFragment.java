@@ -2,18 +2,34 @@ package com.example.agricart;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,10 +71,66 @@ public class SearchFragment extends Fragment {
         }
     }
 
+    SearchView searchView;
+    DatabaseReference databaseReference;
+    ArrayList<SearchStore> arrayList;
+    RecyclerView recyclerView;
+    SearchAdapter searchAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Store");
+        arrayList = new ArrayList<>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        searchAdapter = new SearchAdapter(requireContext(), arrayList);
+        recyclerView.setAdapter(searchAdapter);
+        searchView = view.findViewById(R.id.searchView);
+        searchView = view.findViewById(R.id.searchView);
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList = new ArrayList<>();
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                    arrayList.add(dataSnapshot.getValue(SearchStore.class));
+                }
+                searchAdapter = new SearchAdapter(requireContext(), arrayList);
+                recyclerView.setAdapter(searchAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                search(s);
+                return true;
+            }
+        });
+
+
+        return view;
+    }
+
+    private void search(String s) {
+        ArrayList<SearchStore> list = new ArrayList<>();
+        for (SearchStore searchStore : arrayList) {
+            if (searchStore.getStoreName().toLowerCase().contains(s.toLowerCase())) {
+               list.add(searchStore);
+            }
+        }
+        SearchAdapter newSearchAdapter = new SearchAdapter(requireContext(), list);
+        recyclerView.setAdapter(newSearchAdapter);
     }
 }
