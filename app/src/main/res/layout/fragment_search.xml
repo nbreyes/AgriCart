@@ -11,18 +11,23 @@
         android:layout_height="match_parent">
 
         <SearchView
-            android:layout_marginTop="50dp"
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
             android:iconifiedByDefault="false"
-            android:queryHint="Search"/>
+            android:queryHint="Search"
+            android:searchIcon="@drawable/search"
+            android:background="@drawable/search_border"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_below="@id/searchView"
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
     </RelativeLayout>
 
 </FrameLayout>

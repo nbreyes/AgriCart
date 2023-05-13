@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:background="#4CAF50"
+    android:background="#BEDBBB"
     android:gravity="bottom|start"
     android:orientation="vertical"
     tools:context=".MainActivity">
@@ -12,6 +12,6 @@
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"/>
+        android:textSize="24sp" />
 
 </LinearLayout>
