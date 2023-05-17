@@ -59,7 +59,6 @@ public class Recommendation extends AppCompatActivity implements LocationListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommendation);
 
-        test = (TextView) findViewById(R.id.test);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +155,7 @@ public class Recommendation extends AppCompatActivity implements LocationListene
             }
         }
         else {
-            test.setText("Permission Denied");
+            responseChatGPT.setText("Permission Denied");
         }
     }
 
@@ -198,7 +197,7 @@ public class Recommendation extends AppCompatActivity implements LocationListene
         RequestBody body = RequestBody.create(JsonBody.toString(), JSON);
         Request request = new Request.Builder()
                 .url("https://api.openai.com/v1/completions")
-                .header("Authorization", "Bearer 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")
+                .header("Authorization", "Bearer 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")
                 .post(body)
                 .build();
 

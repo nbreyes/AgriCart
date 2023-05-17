@@ -5,16 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Seller"
-    android:padding="20dp">
+    tools:context=".Seller">
 
     <androidx.appcompat.widget.Toolbar
+        android:background="#B3C890"
         android:id="@+id/toolbar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:theme="?attr/actionBarTheme"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/back" />
@@ -31,6 +28,7 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <TextView
+        android:layout_marginLeft="15dp"
         android:id="@+id/storeNameText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -56,6 +54,8 @@
         app:layout_constraintTop_toBottomOf="@+id/storeNameText" />
 
     <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
         android:id="@+id/descriptionText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

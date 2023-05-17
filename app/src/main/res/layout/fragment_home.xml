@@ -3,20 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".HomeFragment">
-    
+
     <RelativeLayout
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="50dp"
             android:id="@+id/storeRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/emptyView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No items to display"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
 
     </RelativeLayout>
-
-
 
 </FrameLayout>

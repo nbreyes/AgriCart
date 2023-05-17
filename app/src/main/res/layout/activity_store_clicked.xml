@@ -7,8 +7,9 @@
     tools:context=".StoreClicked">
 
     <androidx.appcompat.widget.Toolbar
+        android:background="#B3C890"
         android:id="@+id/toolbar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -16,6 +17,7 @@
 
     <TextView
         android:id="@+id/storeName"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -32,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:text="Store Description"
+        android:textColor="@color/black"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

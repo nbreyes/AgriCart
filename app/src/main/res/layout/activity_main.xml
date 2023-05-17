@@ -15,8 +15,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="#BEDBBB"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#B3C890"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +36,7 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/BottomNavView"
         android:layout_width="match_parent"
-        android:background="#BEDBBB"
+        android:background="#B3C890"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

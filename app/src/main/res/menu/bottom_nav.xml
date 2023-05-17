@@ -9,8 +9,4 @@
         android:title="Search"
         android:id="@+id/search"
         android:icon="@drawable/search"/>
-    <item
-        android:title="History"
-        android:id="@+id/history"
-        android:icon="@drawable/history"/>
 </menu>

@@ -89,6 +89,7 @@ public class SearchFragment extends Fragment{
         recyclerView.setAdapter(searchAdapter);
         searchView = view.findViewById(R.id.searchView);
         searchView = view.findViewById(R.id.searchView);
+        recyclerView.setVisibility(View.INVISIBLE);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,6 +115,10 @@ public class SearchFragment extends Fragment{
 
             @Override
             public boolean onQueryTextChange(String s) {
+                if (s.isEmpty()) {
+                    recyclerView.setVisibility(View.INVISIBLE);
+                }
+                recyclerView.setVisibility(View.VISIBLE);
                 search(s);
                 return true;
             }
@@ -125,9 +130,11 @@ public class SearchFragment extends Fragment{
 
     private void search(String s) {
         ArrayList<SearchStore> list = new ArrayList<>();
-        for (SearchStore searchStore : arrayList) {
-            if (searchStore.getStoreName().toLowerCase().contains(s.toLowerCase())) {
-               list.add(searchStore);
+        if (s != null) {
+            for (SearchStore searchStore : arrayList) {
+                if (searchStore != null && searchStore.getStoreName() != null && searchStore.getStoreName().toLowerCase().contains(s.toLowerCase())) {
+                    list.add(searchStore);
+                }
             }
         }
         SearchAdapter newSearchAdapter = new SearchAdapter(requireContext(), list);

@@ -150,9 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.search:
                     changeVisibleFragment(new SearchFragment());
                     break;
-                case R.id.history:
-                    changeVisibleFragment(new HistoryFragment());
-                    break;
             }
 
             return true;
